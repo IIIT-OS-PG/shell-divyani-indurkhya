@@ -7,7 +7,9 @@
 #include <assert.h>
 #include <fstream>
 //#include "/home/divyani/Desktop/sampleshell/finalshell/final/grep.cpp"
-//#include "/home/divyani/Desktop/sampleshell/finalshell/final/alias.cpp"
+//#include "/home/divgyani/Desktop/sampleshell/finalshell/final/alias.cpp"
+#include "/home/divyani/Desktop/sampleshell/finalshell/final/history.cpp"
+#include "/home/divyani/Desktop/sampleshell/finalshell/final/bashrc.cpp"
 #include <unordered_map>
 using namespace std;
 
@@ -47,7 +49,6 @@ void alias_cmd(char **arguments)
             {
                 s2 = s2 + " ";
             }
-
             else
             {
                 s3 = arguments[1][i];
@@ -59,6 +60,13 @@ void alias_cmd(char **arguments)
     cout << s2 << endl;
 
     return;
+}
+void env_var(char **arguments)
+{
+    FILE *fp;
+    int line,col;
+    
+   // indexOf(fp, word, &line, &col);
 }
 void execute_cmd(char **arguments)
 {
@@ -81,53 +89,71 @@ void execute_cmd(char **arguments)
 
         alias_cmd(arguments);
     }
+    else if (strcmp(arguments[0], "history") == 0)
+    {
+        history_cmd();
+    }
+    else if(arguments[0][0]=='$')
+    {
+
+    }
+    else if(strcmp(arguments[0],"cd")==0)
+      {
+          
+          chdir(arguments[1]);
+          return;
+      }
     execvp(arguments[0], arguments);
     return;
 }
 
 int main()
 {
+    bashinitial();
     char buffer[1000];
     char **arguments;
     char **cmd = (char **)malloc(sizeof(char *) * 10);
-     
-     int j = 0;
-    int hist_count=1;
-//     ofstream myfile;
-// myfile.open ("history.txt", ios::out | ios::app | ios::binary);
+
+    int j = 0;
+    int hist_count = 1;
+    //     ofstream myfile;
+    // myfile.open ("history.txt", ios::out | ios::app | ios::binary);
     while (1)
-    { FILE *f;
-     f = fopen("history.txt", "a");
+    {
+        FILE *f;
+        f = fopen("history.txt", "a");
         string s = "";
         fgets(buffer, 1000, stdin);
         // while (buffer[j] != '\0')
         // {
         //     s = s + buffer[j];
         //     j++;FILE *f;
-     f = fopen("history.txt", "a");
+        f = fopen("history.txt", "a");
         // }
-        fputs(buffer,f);
+        fputs(buffer, f);
         fclose(f);
-//         if (myfile.is_open())
-//   {
-//     myfile<<hist_count;
-//     myfile<<" ";    
-//     myfile << s;
-//     myfile<<"\n";
-//     hist_count++;
-//   }
-//   else
-//   {
-//       cout<<
-//   }
-  
-       // fprintf(fp,buffer);
+        //         if (myfile.is_open())
+        //   {
+        //     myfile<<hist_count;
+        //     myfile<<" ";
+        //     myfile << s;
+        //     myfile<<"\n";
+        //     hist_count++;
+        //   }
+      
+
+        // fprintf(fp,buffer);
         int pipe = 0;
         arguments = tokenization(buffer);
         int i;
         // int len = (sizeof(arguments) / sizeof(char **));
         // cout << len << endl;
         // for (i = 0; i < len; i++)
+        if(strcmp(arguments[0],"exit")==0)
+        {
+            return 0;
+        }
+      
         int temp;
         pid_t pID;
         pID = fork();
