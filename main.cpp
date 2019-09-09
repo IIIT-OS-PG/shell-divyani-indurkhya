@@ -10,6 +10,7 @@
 //#include "/home/divgyani/Desktop/sampleshell/finalshell/final/alias.cpp"
 #include "/home/divyani/Desktop/sampleshell/finalshell/final/history.cpp"
 #include "/home/divyani/Desktop/sampleshell/finalshell/final/bashrc.cpp"
+#include "/home/divyani/Desktop/sampleshell/finalshell/final/enviornvar.cpp"
 #include <unordered_map>
 using namespace std;
 
@@ -41,17 +42,20 @@ void alias_cmd(char **arguments)
     }
     i++;
     int k = 1;
-    while (arguments[k][i] != '\0')
+    while (arguments[k] != NULL)
     {
+        i = 0;
+        cout << "imhere" << endl;
         if (arguments[k][i] != '\"')
         {
             if (arguments[k][i] == ' ')
             {
                 s2 = s2 + " ";
+                k++;
             }
             else
             {
-                s3 = arguments[1][i];
+                s3 = arguments[k][i];
                 s2 = s2 + s3;
             }
         }
@@ -61,16 +65,11 @@ void alias_cmd(char **arguments)
 
     return;
 }
-void env_var(char **arguments)
-{
-    FILE *fp;
-    int line,col;
-    
-   // indexOf(fp, word, &line, &col);
-}
+
 void execute_cmd(char **arguments)
 {
     int i = 0, pipe = 0;
+    //char *answer=(char*)malloc(sizeof(char)*10);
     while (arguments[i] != NULL)
     {
         if (strcmp(arguments[i], "|") == 0)
@@ -93,17 +92,22 @@ void execute_cmd(char **arguments)
     {
         history_cmd();
     }
-    else if(arguments[0][0]=='$')
+    else if (arguments[0][0] == '$')
+    {
+        env_var(arguments[0]);
+    }
+    else if (strcmp(arguments[0], "cd") == 0)
     {
 
+        chdir(arguments[1]);
+        return;
     }
-    else if(strcmp(arguments[0],"cd")==0)
-      {
-          
-          chdir(arguments[1]);
-          return;
-      }
-    execvp(arguments[0], arguments);
+    else if (strcmp(arguments[0], "echo") == 0 && (arguments[1][0] == '$'))
+    {
+        env_var(arguments[1]);
+    }
+    else
+        execvp(arguments[0], arguments);
     return;
 }
 
@@ -116,10 +120,28 @@ int main()
 
     int j = 0;
     int hist_count = 1;
+    //char prompt_ret[8]="$PROMPT",*prompt=(char*)malloc(sizeof(char)*10);
     //     ofstream myfile;
     // myfile.open ("history.txt", ios::out | ios::app | ios::binary);
     while (1)
-    {
+    {   
+        char str[100];
+        getcwd(str,100);
+        int k=0;
+         while(str[k]!='D')
+         k++;
+
+        cout << getenv("USER") << ":";
+        while(str[k]!='\0')
+        {
+            printf("\033[1;32m");
+  printf("%c",str[k]);
+  
+            
+            k++;
+         }
+         printf("\033[0m");
+          cout<< "$ ";
         FILE *f;
         f = fopen("history.txt", "a");
         string s = "";
@@ -140,7 +162,6 @@ int main()
         //     myfile<<"\n";
         //     hist_count++;
         //   }
-      
 
         // fprintf(fp,buffer);
         int pipe = 0;
@@ -149,11 +170,11 @@ int main()
         // int len = (sizeof(arguments) / sizeof(char **));
         // cout << len << endl;
         // for (i = 0; i < len; i++)
-        if(strcmp(arguments[0],"exit")==0)
+        if (strcmp(arguments[0], "exit") == 0)
         {
             return 0;
         }
-      
+
         int temp;
         pid_t pID;
         pID = fork();
