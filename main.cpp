@@ -11,7 +11,10 @@
 #include "/home/divyani/Desktop/sampleshell/finalshell/final/history.cpp"
 #include "/home/divyani/Desktop/sampleshell/finalshell/final/bashrc.cpp"
 #include "/home/divyani/Desktop/sampleshell/finalshell/final/enviornvar.cpp"
+#include "/home/divyani/Desktop/sampleshell/finalshell/final/trypipe.cpp"
+#include "/home/divyani/Desktop/sampleshell/finalshell/final/ioredirection.cpp"
 #include <unordered_map>
+#include <iostream>
 using namespace std;
 
 char **tokenization(char *cmd)
@@ -41,26 +44,29 @@ void alias_cmd(char **arguments)
         s1 = s1 + s3;
     }
     i++;
-    int k = 1;
-    while (arguments[k] != NULL)
+    int k = 1, j = 0;
+    while (arguments[1][i] != '\0')
     {
-        i = 0;
+
         cout << "imhere" << endl;
-        if (arguments[k][i] != '\"')
-        {
-            if (arguments[k][i] == ' ')
-            {
-                s2 = s2 + " ";
-                k++;
-            }
-            else
-            {
-                s3 = arguments[k][i];
-                s2 = s2 + s3;
-            }
-        }
+        // if (arguments[1][i] != '\"')
+        // {
+        //     if (arguments[1][i] == ' ')
+        //     {
+        //         s2 = s2 + " ";
+        //         k++;
+        //     }
+        //     else
+        //     {
+        s3 = arguments[1][i];
+        s2 = s2 + s3;
+        // }}
         i++;
     }
+    // while (strcmp(arguments[j], NULL) != 0)
+    //     j++;
+    int len = (sizeof(arguments) / sizeof(char **));
+    cout << len << endl;
     cout << s2 << endl;
 
     return;
@@ -68,20 +74,36 @@ void alias_cmd(char **arguments)
 
 void execute_cmd(char **arguments)
 {
-    int i = 0, pipe = 0;
+    int i = 0, pipe = 0, out_single = 0, out_double = 0;
     //char *answer=(char*)malloc(sizeof(char)*10);
+
     while (arguments[i] != NULL)
     {
         if (strcmp(arguments[i], "|") == 0)
             pipe++;
+        else if (strcmp(arguments[i], ">") == 0)
+        {
+
+            out_single++;
+        }
+        else if (strcmp(arguments[i], ">>") == 0)
+        {
+            out_double++;
+        }
         i++;
     }
+    //  cout<<out_single<<endl;
+    // cout<<out_double<<endl;
+
     if (pipe > 0)
     {
-        cout << pipe << endl;
-        //pipeline(arguments);
+        //cout << pipe << endl;
+        pipe_cmd(arguments, pipe);
     }
-
+    else if (out_double > 0 || out_single > 0)
+    {
+        output_redirect(arguments, out_single, out_double);
+    }
     else if (strcmp(arguments[0], "alias") == 0)
     {
         cout << "here" << endl;
@@ -124,24 +146,24 @@ int main()
     //     ofstream myfile;
     // myfile.open ("history.txt", ios::out | ios::app | ios::binary);
     while (1)
-    {   
+    {
         char str[100];
-        getcwd(str,100);
-        int k=0;
-         while(str[k]!='D')
-         k++;
-
+        getcwd(str, 100);
+        int k = 0;
+        while (str[k] != 'D')
+            k++;
+        printf("\033[1;36m");
         cout << getenv("USER") << ":";
-        while(str[k]!='\0')
+        printf("\033[0m");
+        while (str[k] != '\0')
         {
             printf("\033[1;32m");
-  printf("%c",str[k]);
-  
-            
+            printf("%c", str[k]);
+
             k++;
-         }
-         printf("\033[0m");
-          cout<< "$ ";
+        }
+        printf("\033[0m");
+        cout << "$ ";
         FILE *f;
         f = fopen("history.txt", "a");
         string s = "";
