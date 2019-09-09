@@ -6,30 +6,38 @@
 #include <fcntl.h>
 #include <assert.h>
 
-
 using namespace std;
 void alias_cmd(char **cmd)
-{ int i;
-cout<<"reaching";
-     unordered_map<string, string> map; 
-     string s1="",s2="",s3;
-    if(strcmp(cmd[0],"alias")==0)
+{
+    int i;
+    
+    unordered_map<string, string> map;
+    string s1 = "", s2 = "", s3;
+    if (strcmp(cmd[0], "alias") == 0)
     {
-        for(i=0;cmd[1][i]!='=';i++)
+        for (i = 0; cmd[1][i] != '='; i++)
         {
-            s3=cmd[1][i];
-            s1=s1+s3;
+            s3 = cmd[1][i];
+            s1 = s1 + s3;
         }
-        i++;
-        while(cmd[1][i]!='\0')
+        i += 2;
+        int k = 1;
+        while (cmd[k][i] != '\'')
         {
-             s3=cmd[1][i];
+            if(cmd[k][i]=='\0')
+            {
+                s2=s2+" ";
+                k++;
+                i=0;
+                continue;
 
-            s2=s2+s3;
+            }
+            s3 = cmd[k][i];
+            s2 = s2 + s3;
+            i++;
         }
-        cout<<s2<<s3;
+        cout << s2 << s3;
     }
-
 }
 // int main()
 // {

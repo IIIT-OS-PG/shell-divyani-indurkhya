@@ -41,60 +41,10 @@ void pipe_cmd(char **arguments, int num_pipe)
     {
         pipe(pipe_vol[i]);
     }
-   /* while(*pipeline!=NULL)
-    {
-        pipe(pipe_vol);
-        int pid=fork();
-        if(pid<0)
-        perror("Failed to create process");
-        else if(pid==0)
-        {
-            dup2(x,read_stdin);
-            if(*(pipeline[j]+1)!=NULL)
-            dup2(pipe_vol[write_stdout],write_stdout);
-            close(pipe_vol[write_stdout]);
-            close(pipe_vol[read_stdin]);
-            execvp(pipeline[j][0],pipeline[j]);
-
-        }
-        else
-        {
-            int stat;
-            waitpid(pid, &stat, 0);
-            close(pipe_vol[write_stdout]);
-            x=pipe_vol[read_stdin];
-            //*pipeline+=1;
-            return;
-
-        }
-        
-    }*/
+   
     for(i=0;i<=num_pipe;i++)
     {
-        if(i!=0 && i!=num_pipe)
-        {
-            int pid;
-            if ((pid = fork())==0)
-            {
-                dup2(pipe_vol[i][write_stdout],write_stdout);
-                dup2(pipe_vol[i-1][read_stdin],read_stdin);
-                close(pipe_vol[i][write_stdout]);
-                close(pipe_vol[i-1][read_stdin]);
-                if(execvp(pipeline[i][0],pipeline[i]) < 0)
-                {
-                    cout<<"Error"<<endl;
-                    exit(1);
-                }
-            }
-            else
-            {
-                int stat;
-            waitpid(pid, &stat, 0);
-            close(pipe_vol[i][write_stdout]);
-            }
-            
-        }
-        else if(i == 0)
+        if(i == 0)
         {
             int pid;
             if ((pid = fork())==0)
@@ -117,6 +67,30 @@ void pipe_cmd(char **arguments, int num_pipe)
             }
             
         }
+        else if(i!=0 && i!=num_pipe)
+        {
+            int pid;
+            if ((pid = fork())==0)
+            {
+                dup2(pipe_vol[i][write_stdout],write_stdout);
+                dup2(pipe_vol[i-1][read_stdin],read_stdin);
+                close(pipe_vol[i][write_stdout]);
+                close(pipe_vol[i-1][read_stdin]);
+                if(execvp(pipeline[i][0],pipeline[i]) < 0)
+                {
+                    cout<<"Error"<<endl;
+                    exit(1);
+                }
+            }
+            else
+            {
+                int stat;
+            waitpid(pid, &stat, 0);
+            close(pipe_vol[i][write_stdout]);
+            }
+            
+        }
+       
         
         else
         {

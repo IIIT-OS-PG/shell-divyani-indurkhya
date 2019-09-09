@@ -34,6 +34,12 @@ void bashinitial()
   fprintf(fp, getenv("LOGNAME"));
   fprintf(fp, "\n");
   fprintf(fp, "$PROMPT=$\n");
+  fprintf(fp, "$$=");
+  pid_t pid=getpid();
+  char mypid[10];  
+sprintf(mypid, "%d", pid);
+  fprintf(fp, mypid);
+  fprintf(fp, "\n");
   fclose(fp);
 
 }

@@ -11,7 +11,7 @@
 #include "/home/divyani/Desktop/sampleshell/finalshell/final/history.cpp"
 #include "/home/divyani/Desktop/sampleshell/finalshell/final/bashrc.cpp"
 #include "/home/divyani/Desktop/sampleshell/finalshell/final/enviornvar.cpp"
-#include "/home/divyani/Desktop/sampleshell/finalshell/final/trypipe.cpp"
+#include "/home/divyani/Desktop/sampleshell/finalshell/final/pipe.cpp"
 #include "/home/divyani/Desktop/sampleshell/finalshell/final/ioredirection.cpp"
 #include <unordered_map>
 #include <iostream>
@@ -104,7 +104,7 @@ void execute_cmd(char **arguments)
     {
         output_redirect(arguments, out_single, out_double);
     }
-    else if (strcmp(arguments[0], "alias") == 0)
+    if (strcmp(arguments[0], "alias") == 0)
     {
         cout << "here" << endl;
 
@@ -202,11 +202,29 @@ int main()
         pID = fork();
         if (pID == 0)
         {
+            // if (strcmp(arguments[0], "alias") == 0)
+            // {
+            //     char **alias_arr = (char **)malloc(sizeof(char *) * 10);
+            //     char *token = strtok(buffer, " \n");
+            //     cout<<token<<endl;
+
+            //     char *token1 = strtok(buffer, "=\n");
+            //     cout<<token1<<endl;
+            //     int i = 0;
+            //     while (token != NULL)
+            //     {
+            //         alias_arr[i] = (char *)malloc(sizeof(char) * 100);
+            //         alias_arr[i] = token1;
+            //         token1 = strtok(NULL, " \n");
+            //         i++;
+            //     }
+                
+            // }
             execute_cmd(arguments);
         }
         else if (pID > 0)
         {
-            // printf("%d\n", pID);
+            
             int stat;
             waitpid(pID, &stat, 0);
         }
